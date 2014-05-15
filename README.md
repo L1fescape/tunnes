@@ -1,0 +1,8 @@
+# Jamms
+
+## Installation
+
+```
+make install
+```
+

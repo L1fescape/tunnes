@@ -1,31 +1,18 @@
-'use strict';
+var Backbone = require('backbone'),
+  Marionette = require('backbone.marionette'),
+  $ = require('jquery'),
+  Router, Controller, Application;
 
-require.config({
-  shim: {
-    underscore: {
-      exports: '_'
-    },
-    backbone: {
-      deps: [
-        'underscore',
-        'jquery'
-      ],
-      exports: 'Backbone'
-    },
-  },
-  paths: {
-    templates: '../templates',
-    jquery: '../libs/jquery/jquery',
-    backbone: '../libs/backbone-amd/backbone',
-    underscore: '../libs/underscore-amd/underscore',
-    tpl: '../libs/requirejs-tpl/tpl'
-  }
-});
+Backbone.$ = Marionette.$ = $;
 
-require(['backbone', 'services', 'router'], function (Backbone, Services, Router) {
-  $(document).ready(function() {
-    // create the main app router
-    var router = new Router();
-    Backbone.history.start();
-  });
+Application = require('./app');
+Controller = require('./controller');
+Router = require('./router');
+
+$(function(){ 
+  var app = Application;
+  app.start();
+
+  new Router({ controller: Controller });
+  Backbone.history.start();
 });

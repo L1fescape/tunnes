@@ -19,7 +19,7 @@ body {
 
 /* -- Header -- */
 
-#hPageHeader {
+#header {
   width:100%;
   background:#fff;
   -moz-box-shadow:    2px 2px 5px 2px #ccc;
@@ -28,41 +28,24 @@ body {
   position:absolute;
   top:0;
   left:0;
-}
-
-.header a {
-  color:#333;
-}
-
-.header .title {
-  font-size:18px;
-}
-
-.header {
-  width:970px;
-  position:relative;
-  margin:0 auto;
-  padding:20px;
-  height:70px;
-}
-
-.header .fa-plus {
-  cursor:pointer;
-  position:absolute;
-  top:20px;
-  right:20px;
-  font-size:16px;
+  padding:0 20px;
+  box-sizing: border-box;
 }
 
 /* -- Body -- */
 
-#dPage {
-  padding:20px;
-  width:970px;
-  margin:70px auto 0;
+#main {
+  padding: 20px;
+  margin-top: 80px;
 }
 
-.add {
-  display:none;
-  padding:20px 0;
+.song {
+  background: white;
+  padding:20px;
+  margin:20px 0;
+  box-sizing: border-box;
+}
+
+.song h3 {
+  margin-top:0;
 }

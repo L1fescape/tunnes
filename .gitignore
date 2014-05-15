@@ -1,5 +1,5 @@
 node_modules/
-app/libs
 dist
 server/settings.js
 .DS_Store
+npm-debug.log

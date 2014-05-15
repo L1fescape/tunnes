@@ -18,7 +18,7 @@ app.configure(function() {
   // to reference that
   var dir = __dirname.split("/");
   dir.pop();
-  app.use(express.static(dir.join("/") + "/app"));
+  app.use(express.static(dir.join("/") + "/dist"));
   // used for reading post body variables
   app.use(express.bodyParser());
 });
