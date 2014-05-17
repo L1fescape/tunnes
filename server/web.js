@@ -32,7 +32,7 @@ app.options("*", function(req, res) {
 });
 
 
-// routes
+// API Routes
 app.get('/songs', songs.findAll);
 app.get('/songs/:id', songs.findById);
 app.post('/songs', songs.addSong);
