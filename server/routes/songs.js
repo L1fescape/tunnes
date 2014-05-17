@@ -48,6 +48,9 @@ exports.addSong = function(req, res) {
     if (url.indexOf("soundcloud") > -1){
       addSong_soundcloud(req, res, url);
     }
+    else if (url.indexOf("youtube") > -1){
+      addSong_youtube(req, res, url);
+    }
     else {
       res.send({'error': 'Site not supported'}, 400);
     }
@@ -65,6 +68,38 @@ function addSong_soundcloud(req, res, url){
           name : body.title,
           genre : body.genre,
           site : 'soundcloud'
+        }; 
+        console.log(song)
+        db.collection(settings.mongo.coll, function(err, collection) {
+            collection.insert(song, {safe:true}, function(err, result) {
+                if (err) {
+                    res.send({'error':'An error has occurred'});
+                } else {
+                    res.send(result[0]);
+                }
+            });
+        });
+      }
+      else{
+        console.log(error);
+      }
+    });
+}
+
+function addSong_youtube(req, res, url){
+    var apiKey = settings.google.api_key;
+    var videoId = url.split("v=")[1];
+    var requestUrl = "https://www.googleapis.com/youtube/v3/videos?id="+videoId+"&key=" + apiKey + "&fields=items(id,snippet(channelId,title,categoryId),statistics)&part=snippet,statistics"
+    request(requestUrl, function (error, response, body) {
+      if (!error) {
+        body = JSON.parse(body);
+        console.log(body);
+        var song = {
+          songid : body.items[0].id,
+          songurl : url,
+          name : body.items[0].snippet.title,
+          genre : null,
+          site : 'youtube'
         }; 
         console.log(song)
         db.collection(settings.mongo.coll, function(err, collection) {
