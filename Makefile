@@ -10,7 +10,8 @@ install:
 .PHONY: build
 build:
 	rm -rf dist
-	mkdir dist{,/js,/css}
+	mkdir -p dist/js
+	mkdir -p dist/css
 	cp app/index.html dist
 	$(MAKE) build-js
 	$(MAKE) build-css
