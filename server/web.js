@@ -42,5 +42,5 @@ app.get('/api/v1/genres/:genre', songs.findByGenre);
 
 
 // run http server
-httpServer.listen(4000);
-console.log("Listening on port", 4000);
+httpServer.listen(settings.web.port, settings.web.host);
+console.log('Listening on', settings.web.host + ':' + settings.web.port);
