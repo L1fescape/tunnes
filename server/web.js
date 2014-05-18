@@ -8,6 +8,9 @@ var
   http = require('http'),
   httpServer = http.createServer(app),
 
+  // import settings
+  settings = require('./settings'),
+
   // import routes
   songs = require('./routes/songs');
 
