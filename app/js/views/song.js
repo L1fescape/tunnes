@@ -17,8 +17,17 @@ module.exports = Marionette.CompositeView.extend({
     }
   },
 
+  showHide: function(){
+    if (this.model.get('shown')){
+      this.$el.removeClass('hide');
+    }
+    else {
+      this.$el.addClass('hide');
+    }
+  },
+
   initialize: function(){
-    this.listenTo(this.model, 'change', this.render, this);
+    this.listenTo(this.model, 'change', this.showHide, this);
   }
 });
 
