@@ -1,4 +1,4 @@
-# Jamms
+# Tunnes
 
 > Share tunes with your friends
 
