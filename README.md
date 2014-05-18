@@ -2,7 +2,7 @@
 
 > Share tunes with your friends
 
-Note: should be working, but features are still being added.
+_Note:_ should be working, but features are still being added.
 
 ## Installation
 
@@ -25,3 +25,10 @@ make
 ```
 make server
 ```
+
+_Note:_ this will act as both an api server and a web server. You can use any webserver you want, just have it serve the `/dist` folder.
+
+## Todo
+
+- Custom, global player that controls state of widgets on the page
+- Playlists
