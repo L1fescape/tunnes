@@ -51,6 +51,7 @@ body {
   padding:20px;
   margin:20px;
   display:inline-block;
+  vertical-align:top;
   width:400px;
   box-sizing: border-box;
 }
