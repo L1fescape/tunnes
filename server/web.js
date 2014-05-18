@@ -33,11 +33,12 @@ app.options("*", function(req, res) {
 
 
 // API Routes
-app.get('/songs', songs.findAll);
-app.get('/songs/:id', songs.findById);
-app.post('/songs', songs.addSong);
+app.get('/api/v1/songs', songs.findAll);
+app.get('/api/v1/songs/:id', songs.findById);
+app.post('/api/v1/songs', songs.addSong);
 
-
+app.get('/api/v1/genres', songs.findAllGenres);
+app.get('/api/v1/genres/:genre', songs.findByGenre);
 
 
 // run http server

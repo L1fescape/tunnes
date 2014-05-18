@@ -1,25 +1,6 @@
-var mongo = require('mongodb');
-var request = require('request');
-var settings = require('../settings');
- 
-var Server = mongo.Server,
-    Db = mongo.Db,
-    BSON = mongo.BSONPure;
- 
-var server = new Server(settings.mongo.host, settings.mongo.port, {auto_reconnect: true});
-db = new Db(settings.mongo.db, server);
- 
-db.open(function(err, db) {
-    if(!err) {
-        console.log("Connected to", settings.mongo.db, "database");
-        db.collection(settings.mongo.coll, {strict:true}, function(err, collection) {
-            if (err) {
-                console.log("The", settings.mongo.coll, "collection doesn't exist. Creating it with sample data...");
-                populateDB();
-            }
-        });
-    }
-});
+var db = require('../db'),
+  request = require('request'),
+  settings = require('../settings');
  
 exports.findById = function(req, res) {
     var id = req.params.id;
@@ -33,6 +14,28 @@ exports.findById = function(req, res) {
 exports.findAll = function(req, res) {
     db.collection(settings.mongo.coll, function(err, collection) {
         collection.find().toArray(function(err, items) {
+            res.send(items);
+        });
+    });
+};
+
+exports.findByGenre = function(req, res) {
+    var genre = req.params.genre;
+    if (!genre){
+      res.send({'error': 'Please provide a genre'}, 400);
+      return;
+    }
+    genre = new RegExp(["^", genre, "$"].join(""),"i");
+    db.collection(settings.mongo.coll, function(err, collection) {
+        collection.find({'genre': genre}).toArray(function(err, items) {
+            res.send(items);
+        });
+    });
+};
+
+exports.findAllGenres = function(req, res) {
+    db.collection(settings.mongo.coll, function(err, collection) {
+        collection.distinct('genre', function(err, items) {
             res.send(items);
         });
     });
@@ -117,22 +120,3 @@ function addSong_youtube(req, res, url){
       }
     });
 }
-
-
-var populateDB = function() {
- 
-    var songs = [
-    {
-        name: "Old un-aired Mix For Gilles Peterson's show",
-        songid: 141891868,
-        artist: "FaltyDL",
-        genre: "Relax",
-        url: "https://soundcloud.com/faltydl/old-unused-mix-for-gilles",
-        site: "soundcloud"
-    }];
- 
-    db.collection(settings.mongo.coll, function(err, collection) {
-        collection.insert(songs, {safe:true}, function(err, result) {});
-    });
- 
-};
