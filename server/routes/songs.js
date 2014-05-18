@@ -1,5 +1,6 @@
 var db = require('../db'),
   request = require('request'),
+  url = require('url'),
   settings = require('../settings');
  
 exports.findById = function(req, res) {
@@ -42,17 +43,17 @@ exports.findAllGenres = function(req, res) {
 };
  
 exports.addSong = function(req, res) {
-    var url = req.body.songurl;
-    console.log(url);
-    if (!url){
+    var songurl = req.body.songurl;
+    console.log(songurl);
+    if (!songurl){
       res.send({'error': 'Please provide a url'}, 400);
       return;
     }
-    if (url.indexOf("soundcloud") > -1){
-      addSong_soundcloud(req, res, url);
+    if (songurl.indexOf('soundcloud') > -1){
+      addSong_soundcloud(req, res, songurl);
     }
-    else if (url.indexOf("youtube") > -1){
-      addSong_youtube(req, res, url);
+    else if (songurl.indexOf('youtube') > -1 || songurl.indexOf('youtu.be') > -1){
+      addSong_youtube(req, res, songurl);
     }
     else {
       res.send({'error': 'Site not supported'}, 400);
@@ -62,7 +63,7 @@ exports.addSong = function(req, res) {
 
 function addSong_soundcloud(req, res, url){
     var clientId = settings.soundcloud.client_id;
-    request("http://api.soundcloud.com/resolve.json?url=" + url + "&client_id=" + clientId, function (error, response, body) {
+    request('http://api.soundcloud.com/resolve.json?url=' + url + '&client_id=' + clientId, function (error, response, body) {
       if (!error) {
         body = JSON.parse(body);
         var song = {
@@ -89,10 +90,33 @@ function addSong_soundcloud(req, res, url){
     });
 }
 
-function addSong_youtube(req, res, url){
-    var apiKey = settings.google.api_key;
-    var videoId = url.split("v=")[1];
-    var requestUrl = "https://www.googleapis.com/youtube/v3/videos?id="+videoId+"&key=" + apiKey + "&fields=items(id,snippet(channelId,title,categoryId),statistics)&part=snippet,statistics"
+function addSong_youtube(req, res, songurl){
+    var apiKey = settings.google.api_key,
+      parsedUrl = url.parse(songurl, true),
+      songid;
+
+    if (!parsedUrl && !parsedUrl.host){
+      res.send({'error':'There was an error parsing the YouTube url'});
+      return;
+    }
+    
+    switch (parsedUrl.host){
+      case 'www.youtube.com':
+      case 'youtube.com':
+        songid = parsedUrl.query && parsedUrl.query.v ? parsedUrl.query.v : null;
+        break;
+      case 'youtu.be':
+      case 'www.youtu.be':
+        songid = parsedUrl.pathname.substr(1);
+        break;
+    }
+
+    if (!songid){
+      res.send({'error':'There was an error parsing the YouTube url'});
+      return;
+    }
+
+    var requestUrl = "https://www.googleapis.com/youtube/v3/videos?id=" + songid + "&key=" + apiKey + "&fields=items(id,snippet(channelId,title,categoryId),statistics)&part=snippet,statistics"
     request(requestUrl, function (error, response, body) {
       if (!error) {
         body = JSON.parse(body);

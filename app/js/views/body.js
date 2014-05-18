@@ -9,7 +9,11 @@ module.exports = Marionette.CompositeView.extend({
 
   filterGenre: function(genre){
     this.collection.each(function(item, index){
-      if (!genre || item.get('genre').toLowerCase() === genre.toLowerCase()){
+      if (!genre){ 
+        item.set('shown', true);
+      } else if (!item.get('genre')){
+        item.set('shown', false);
+      } else if (item.get('genre').toLowerCase() === genre.toLowerCase()){
         item.set('shown', true);
       }
       else{
