@@ -1,11 +1,16 @@
 #!/usr/bin/env make
 
 all: build
+server: serve
 
 .PHONY: install
 install:
 	npm install
 	npm dedupe
+
+.PHONY: serve
+serve:
+	node server/web.js
 
 .PHONY: build
 build:

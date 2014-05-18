@@ -23,5 +23,5 @@ make
 ## Run
 
 ```
-node server/web.js
+make server
 ```
