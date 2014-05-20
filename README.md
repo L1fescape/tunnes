@@ -31,4 +31,7 @@ _Note:_ this will act as both an api server and a web server. You can use any we
 ## Todo
 
 - Custom, global player that controls state of widgets on the page
+- Loading indicator
 - Playlists
+- Mobile
+- Wrap soundcloud and youtube widget api's in shim

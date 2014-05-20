@@ -5,6 +5,7 @@ module.exports = Marionette.AppRouter.extend({
     '' : 'home',
     'genres' : 'genre',
     'genres/:genre' : 'genre',
-    'about' : 'about'
+    'playlists' : 'playlist',
+    'playlists/:playlist' : 'playlist'
   }
 });

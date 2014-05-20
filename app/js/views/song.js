@@ -1,19 +1,34 @@
 var Marionette = require('backbone.marionette'),
-  SoundCloudTemplate = require('../templates/songs/soundcloud.handlebars'),
-  YouTubeTemplate = require('../templates/songs/youtube.handlebars');
+  vent = require('../vent'),
+  SongTemplate = require('../templates/song.handlebars'),
+  _ = require('lodash');
 
 module.exports = Marionette.CompositeView.extend({
   tagName: 'div',
   className: 'song',
+  template: SongTemplate,
 
-  getTemplate: function(){
-    switch (this.model.get('site')) {
-      case "soundcloud":
-        return SoundCloudTemplate;
-      case "youtube":
-        return YouTubeTemplate;
-      default:
-        return '';
+  events : {
+    "click .fa" : "togglePlaying"
+  },
+  
+  initialize: function(){
+    this.listenTo(this.model, 'change:shown', this.showHide, this);
+    this.listenTo(this.model, 'change:playing', this.updateState, this);
+  },
+
+  togglePlaying : function(){
+    vent.trigger('play', this.model);
+  },
+
+  updateState : function(){
+    var playing = this.model.get('playing');
+    if (playing){
+      this.$el.find('.fa').removeClass('fa-play-circle');
+      this.$el.find('.fa').addClass('fa-pause');
+    }else{
+      this.$el.find('.fa').removeClass('fa-pause');
+      this.$el.find('.fa').addClass('fa-play-circle');
     }
   },
 
@@ -24,10 +39,6 @@ module.exports = Marionette.CompositeView.extend({
     else {
       this.$el.addClass('hide');
     }
-  },
-
-  initialize: function(){
-    this.listenTo(this.model, 'change', this.showHide, this);
   }
 });
 

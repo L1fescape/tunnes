@@ -1,58 +1,42 @@
 var Marionette = require('backbone.marionette'),
   SidebarTemplate = require('../templates/sidebar.handlebars'),
+  BabySitter = require('backbone.babysitter'),
+  AddSongView = require('./add-song'),
+  GenreView = require('./genre'),
+  PlayerView = require('./player'),
+  PlayerModel = require('../models/player'),
   _ = require('lodash');
-  
+
 module.exports = Marionette.ItemView.extend({
   template : SidebarTemplate,
-  genres : [],
-
-  events: {
-    'click button' : 'addSong',
-    'keypress input[type=text]' : 'input'
-  },
 
   initialize : function(){
-    this.collection.bind('add', this.onSongAdded, this);
   },
 
-  addSong : function(e){
-    e.preventDefault();
-    var song = {
-      songurl : this.$el.find('input[name=url]').val()
-    };
-    this.collection.create(song, { wait: true, error: _.bind(this.onSongAddError, this) });
+  constructor : function(){
+    var player = new PlayerModel({}); 
+
+    this.children = new BabySitter()
+    this.children.add(new AddSongView());
+    this.children.add(new GenreView());
+    this.children.add(new PlayerView({model: player}));
+    this.on('show', this._triggerShowChildren);
+    this.on('render', this._renderChildren, this);
+
+    Marionette.ItemView.apply(this, arguments);
   },
 
-  onSongAdded : function(){
-    this.$el.find('input[name=url]').val("");
-    this.genres = this.collection.getGenres();
-    this.render();
+  _triggerShowChildren : function(){
+    this.children.each(function(child){
+      Marionette.triggerMethod.call(child, 'show');
+    });
   },
 
-  onSongAddError : function(model, response){
-    var error = response.responseJSON && 
-      response.responseJSON.error ? 
-      response.responseJSON.error : 
-      "Oh no! Something bad happened.";
-
-    this.$el.find('.notifications').html('<div class="alert alert-danger">'+error+'</div>');
-    clearTimeout(this.timeout);
-    this.timeout = setTimeout(_.bind(function(){
-      this.$el.find('.notifications').html('');
-    }, this), 2000);
+  _renderChildren : function(){
+    this.children.each(this._renderChildView, this);
   },
 
-  input : function(e){
-    if (e.which === 13){
-      this.addSong(e);
-    }
-  },
-
-  serializeData: function(){
-    var data = {};
-    data.genres = this.genres;
-
-    return data;
+  _renderChildView : function(view){
+    this.$el.append(view.render().$el);
   }
-
 });

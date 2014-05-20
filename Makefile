@@ -10,7 +10,7 @@ install:
 
 .PHONY: serve
 serve:
-	node server/web.js
+	-node server/web.js
 
 .PHONY: build
 build:

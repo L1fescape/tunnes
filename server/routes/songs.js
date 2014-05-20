@@ -66,11 +66,14 @@ function addSong_soundcloud(req, res, url){
     request('http://api.soundcloud.com/resolve.json?url=' + url + '&client_id=' + clientId, function (error, response, body) {
       if (!error) {
         body = JSON.parse(body);
+        console.log(body);
         var song = {
           songid : body.id,
-          songurl : url,
+          songurl : body.permalink_url,
+          image : body.artwork_url,
           name : body.title,
           genre : body.genre,
+          timestamp : new Date().getTime(),
           site : 'soundcloud'
         }; 
         console.log(song)
@@ -116,16 +119,18 @@ function addSong_youtube(req, res, songurl){
       return;
     }
 
-    var requestUrl = "https://www.googleapis.com/youtube/v3/videos?id=" + songid + "&key=" + apiKey + "&fields=items(id,snippet(channelId,title,categoryId),statistics)&part=snippet,statistics"
+    var requestUrl = "https://www.googleapis.com/youtube/v3/videos?id=" + songid + "&key=" + apiKey + "&part=snippet,statistics"
     request(requestUrl, function (error, response, body) {
-      if (!error) {
-        body = JSON.parse(body);
-        console.log(body);
+      body = JSON.parse(body);
+      var video = body.items && body.items.length ? body.items[0] : null;
+      if (!error && video) {
         var song = {
-          songid : body.items[0].id,
+          songid : video.id,
           songurl : url,
-          name : body.items[0].snippet.title,
+          name : video.snippet.title,
           genre : null,
+          image : video.snippet.thumbnails.high.url,
+          timestamp : new Date().getTime(),
           site : 'youtube'
         }; 
         console.log(song)
