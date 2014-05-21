@@ -124,16 +124,16 @@ function addSong_youtube(req, res, songurl){
       body = JSON.parse(body);
       var video = body.items && body.items.length ? body.items[0] : null;
       if (!error && video) {
+        console.log(video);
         var song = {
           songid : video.id,
-          songurl : url,
+          songurl : "http://youtu.be/" + video.id,
           name : video.snippet.title,
           genre : null,
           image : video.snippet.thumbnails.high.url,
           timestamp : new Date().getTime(),
           site : 'youtube'
         }; 
-        console.log(song)
         db.collection(settings.mongo.coll, function(err, collection) {
             collection.insert(song, {safe:true}, function(err, result) {
                 if (err) {

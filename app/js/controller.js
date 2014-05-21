@@ -1,13 +1,13 @@
-var app = require('./app');
+var vent = require('./vent');
 
 module.exports = {
   home: function() {
-    app.vent.trigger('filter:genre');
+    vent.trigger('filter:genre');
   },
   genre: function(genre){
-    app.vent.trigger('filter:genre', genre);
+    vent.trigger('filter:genre', genre);
   },
   playlist: function(playlist){
-    app.vent.trigger('filter:playlist', playlist);
+    vent.trigger('filter:playlist', playlist);
   }
 };

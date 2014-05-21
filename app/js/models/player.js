@@ -25,6 +25,9 @@ module.exports = Backbone.Model.extend({
     var player;
 
     if (!song){
+      if (!this.curSong){
+        return;
+      }
       song = this.curSong;
     }
 
